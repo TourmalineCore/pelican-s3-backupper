@@ -2,7 +2,7 @@ FROM python:3.9-alpine
 
 WORKDIR /app
 COPY s3-backup.py .
-COPY .rclone-test.conf .
+COPY .rclone.conf .
 
 RUN apk --update add \
     python3 \
@@ -19,5 +19,5 @@ RUN curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip \
     && chmod +x /usr/bin/rclone \
     && cd .. \
     && rm -rf rclone-*
-    
+
 CMD ["python", "s3-backup.py"]
