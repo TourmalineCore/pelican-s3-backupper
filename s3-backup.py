@@ -6,7 +6,7 @@ from datetime import datetime
 
 def main():
 
-    cfg_path = r'.rclone.conf'
+    cfg_path = r'.rclone-test.conf'
 
     with open(cfg_path) as f:
         cfg = f.read()

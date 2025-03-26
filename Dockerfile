@@ -2,7 +2,7 @@ FROM python:3.9-alpine
 
 WORKDIR /app
 COPY s3-backup.py .
-COPY .rclone.conf .
+COPY .rclone-test.conf .
 
 RUN apk --update add \
     python3 \
