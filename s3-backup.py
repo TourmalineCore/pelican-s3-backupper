@@ -9,7 +9,7 @@ def main():
     cfg_path = r'.rclone-test.conf'
     directory_path = "/tmp/s3-backup"
 
-    os.mkdir(directory_path, mode=0o777, *, dir_fd=None)
+    os.mkdir(directory_path)
 
     with open(cfg_path) as f:
         cfg = f.read()
