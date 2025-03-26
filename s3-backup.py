@@ -19,6 +19,8 @@ def main():
     # s3-1:pelican-local-env is source
     rclone.with_config(cfg).copy("s3-1:pelican-local-env", directory_path, flags=["--transfers=256"])
 
+    os.listdir(directory_path)
+
     shutil.make_archive(archive_name, 'zip', directory_path)
 
     # s3-2:backup is destination
