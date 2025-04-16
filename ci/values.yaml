@@ -84,5 +84,5 @@ extraDeploy:
               restartPolicy: OnFailure
               containers:
                 - name: s3-backup-cron
-                  image: ghcr.io/tourmalinecore/pelican-s3-backupper:latest
+                  image: ghcr.io/tourmalinecore/pelican-s3-backupper:sha-2dbf73b6068e116e650f45813882d8e1ab1c1572
                   imagePullPolicy: Always
