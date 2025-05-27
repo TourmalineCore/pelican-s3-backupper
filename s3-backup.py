@@ -27,9 +27,11 @@ def main():
     source_bucket_name = os.getenv('SOURCE_S3_AWS_BUCKET_NAME')
     destination_bucket_name = os.getenv('DESTINATION_S3_AWS_BUCKET_NAME')
 
-    download_dir(temp_directory_for_files_from_source, source_bucket_name, source_s3, bucket_subfolder_name)
+    if not os.path.exists(temp_directory_for_files_from_source):
+        os.mkdir(temp_directory_for_files_from_source)
 
     if os.path.exists(temp_directory_for_files_from_source):
+        download_dir(temp_directory_for_files_from_source, source_bucket_name, source_s3, bucket_subfolder_name)
         
         shutil.make_archive(archive_name, 'zip', temp_directory_for_files_from_source + "/" + bucket_subfolder_name)
 
@@ -53,7 +55,6 @@ def download_dir(local, bucket, client, bucket_subfolder_name):
     """
     keys = []
     dirs = []
-    next_token = ''
     base_kwargs = {
         'Bucket': bucket,
         'Prefix': bucket_subfolder_name
