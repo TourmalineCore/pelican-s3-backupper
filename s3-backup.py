@@ -31,13 +31,14 @@ def main():
         os.mkdir(temp_directory_for_files_from_source)
 
     download_dir(temp_directory_for_files_from_source, source_bucket_name, source_s3, bucket_subfolder_name)
-    
-    shutil.make_archive(archive_name, 'zip', temp_directory_for_files_from_source + "/" + bucket_subfolder_name)
 
-    upload_to_s3(archive_name + ".zip", destination_s3, destination_bucket_name)
+    if not len(os.listdir(temp_directory_for_files_from_source)) == 0:
+        shutil.make_archive(archive_name, 'zip', temp_directory_for_files_from_source + "/" + bucket_subfolder_name)
 
-    shutil.rmtree(temp_directory_for_files_from_source)
-    os.remove(archive_name + ".zip")
+        upload_to_s3(archive_name + ".zip", destination_s3, destination_bucket_name)
+
+    else:
+        print(f"Bucket {source_bucket_name} is empty. Backup will not be created.")
     
     
 
