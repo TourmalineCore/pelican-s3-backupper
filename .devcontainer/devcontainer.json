@@ -11,14 +11,6 @@
 			"enableNonRootDocker": "true",
 			"moby": "true"
 		},
-		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1.1.9": {
-			"version": "1.30.0",
-			"helm": "3.14.4",
-			"minikube": "none"
-		},
-		"ghcr.io/devcontainers-contrib/features/kind:1.0.14": {
-			"version": "0.23.0"
-		},
 		"ghcr.io/devcontainers-extra/features/rclone:1": {
 
 		},
