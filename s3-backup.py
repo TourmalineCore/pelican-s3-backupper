@@ -8,6 +8,8 @@ def main():
 
     path = "/tmp/backup"
 
+    shutil.rmtree(path)
+
     bucket="s3:pelican-staging/media-assets"
 
     backup_filename = "s3-backup_2025.04.16.09-51-01UTC.backup.zip"
