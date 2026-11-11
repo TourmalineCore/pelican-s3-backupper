@@ -1,14 +1,8 @@
 import boto3
 import os
 import shutil
-import logging
 from datetime import datetime
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="[%(asctime)s]: %(message)s",
-    datefmt="%Y-%m-%dT%H-%M-%S",
-)
 
 def main():
     temp_directory_for_files_from_source = "/tmp/backup"
@@ -44,7 +38,8 @@ def main():
         upload_to_s3(archive_name + ".zip", destination_s3, destination_bucket_name)
 
     else:
-        logging.info(f"Bucket {source_bucket_name} is empty. Backup will not be created.")
+        print(f"Bucket {source_bucket_name} is empty. Backup will not be created.")
+    
     
 
 # Reference: https://stackoverflow.com/a/56267603
@@ -57,49 +52,36 @@ def download_dir(local, bucket, client, bucket_subfolder_name):
     - client: initialized s3 client object
     """
     keys = []
-
+    dirs = []
     base_kwargs = {
         'Bucket': bucket,
         'Prefix': bucket_subfolder_name
     }
 
     kwargs = base_kwargs.copy()
-    paginator = client.get_paginator('list_objects_v2')
+    results = client.list_objects_v2(**kwargs)
 
-    for page in paginator.paginate(**kwargs):
-        contents = page.get('Contents')
-        for obj in contents:
-            key = obj.get('Key')
-            if not key.endswith('/'):
-                keys.append(key)
+    contents = results.get('Contents')
 
-    for key in keys:
-        dest_pathname = os.path.join(local, key)      
-        os.makedirs(os.path.dirname(dest_pathname), exist_ok=True)
+    if contents is not None:
+        for i in contents:
+            k = i.get('Key')
+            if k[-1] != '/':
+                keys.append(k)
 
-        logging.info(f'Downloading {key}')
-        client.download_file(bucket, key, dest_pathname)
-        if not os.path.exists(dest_pathname):
-            logging.info(f'File not found after download: {dest_pathname}')
-            raise
-        logging.info(f'Downloaded {key}')
+    for k in keys:
+        dest_pathname = os.path.join(local, k)      
+        if not os.path.exists(os.path.dirname(dest_pathname)):
+            os.makedirs(os.path.dirname(dest_pathname))
 
-    logging.info(f'Successfully downloaded {len(keys)} files')
+        client.download_file(bucket, k, dest_pathname)
     
 
+     
 def upload_to_s3(path, s3, bucket):
-    logging.info(f'Uploading {path}')
-
-    try:
-        with open(path, "rb") as data:
-            s3.upload_fileobj(data, bucket, path)
-
-        logging.info(f'Backup is successfully uploaded {path}')
-
-    except Exception as e:
-        logging.info(f'Failed to upload {path}: {e}')
-        raise
-
+    with open(path, "rb") as data:
+        s3.upload_fileobj(data, bucket, path)
+    
     
 if __name__ == '__main__':
 
