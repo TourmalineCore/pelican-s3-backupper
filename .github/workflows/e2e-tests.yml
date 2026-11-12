@@ -68,9 +68,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4 
 
-        # Wait 60 seconds to make sure that backup was created
-      - name: Wait 60 seconds
-        run: sleep 60
+        # Wait 180 seconds to make sure that backup was created
+      - name: Wait 180 seconds
+        run: sleep 180
 
       - name: Run E2E tests
         run: python e2e-tests.py
