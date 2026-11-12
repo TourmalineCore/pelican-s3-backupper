@@ -68,9 +68,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4 
 
-        # Wait 180 seconds to make sure that backup was created
-      - name: Wait 180 seconds
-        run: sleep 180
+      - name: Wait for the backupper to complete
+        run: |
+          JOB=$(docker exec pelican-control-plane \
+            kubectl get jobs -n local --no-headers | grep pelican-s3-backupper | awk '{print $1}' | tail -1)
+          
+          docker exec pelican-control-plane kubectl wait --for=condition=complete job/$JOB -n local --timeout=10m
 
       - name: Run E2E tests
         run: python e2e-tests.py
