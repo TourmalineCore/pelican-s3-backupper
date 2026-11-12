@@ -82,4 +82,4 @@ jobs:
           S3_BACKUPS_FILENAME_PREFIX: pelican-local-env-s3
           
       - name: Check backupper working time
-        run: docker exec pelican-control-plane kubectl get pods -A
+        run: docker exec pelican-control-plane kubectl get jobs -A
