@@ -59,7 +59,7 @@ jobs:
       - name: Create and upload test files to S3
         run: |
           mkdir test-folder
-          for i in {1..1001}
+          for i in {1..2501}
           do
             echo "test" > "test-folder/file_${i}.txt"
           done
