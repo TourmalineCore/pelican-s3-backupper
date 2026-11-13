@@ -38,29 +38,35 @@ def main():
     s3.download_file(Bucket=os.getenv('S3_AWS_BUCKET_NAME'), Key=latest_backup['Key'], Filename=latest_backup['Key'])
     file_names = []
 
-    # Checking that S3 backup file contains test file 
+    # Checking that S3 backup file contains test files and their count is 2501
     try:
         with zipfile.ZipFile(latest_backup["Key"], 'r') as zip_ref:
             file_names = zip_ref.namelist()
+            
+            if not len(file_names) == 2501:
+                raise Exception("Backup archive doesn't contain all 2501 test files")
 
-            if "test.txt" in file_names:
-                zip_ref.extract("test.txt")
-            else:
-                raise Exception("Test file not found")
+            for i in range(1,2502):
+                if f"file_{i}.txt" in file_names:
+                    zip_ref.extract(f"file_{i}.txt", "/tmp/s3-backupper/extracted-from-archive")
+                else:
+                    raise Exception(f"Test file 'file_{i}.txt' not found")
     except:
         raise Exception("Error while reading zip file")
 
     try:
-        with open("test.txt", "r") as test_file:
-            test_file_content = test_file.read()
+        for i in range(1,2502):
+            with open(f"/tmp/s3-backupper/extracted-from-archive/file_{i}.txt", "r") as test_file:
+                test_file_content = test_file.read()
+                
+                # Checking that test file contains test data
+                if not "test" in test_file_content:
+                    raise Exception(f"Test file 'file_{i}.txt' content error. Test data is missing")
     except:
         raise Exception("Error while reading test file")
 
-    # Checking that test file contains test data
-    if not "test" in test_file_content:
-        raise Exception("Test file content error. Test data is missing")
 
-    print(file_names)
+
 
 if __name__ == '__main__':
     main()
